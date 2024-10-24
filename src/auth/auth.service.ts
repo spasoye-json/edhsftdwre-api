@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { LoginDto } from './login.dto';
 import { compare } from 'bcryptjs';
+import { LoginDto } from './dto/login.dto';
+import { User } from 'src/users/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -11,22 +12,28 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(body: LoginDto) {
-    const { email, password } = body;
+  async validateUser({ email, password }: LoginDto) {
     const user = await this.usersService.findByEmail(email);
 
-    if (user) {
-      const isValidPassword = await compare(password, user.password);
-      if (isValidPassword) {
-        const { password, ...result } = user.toObject();
-        return result;
-      }
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
     }
-    return null;
+
+    if (!user.verified) {
+      throw new UnauthorizedException('User not verified');
+    }
+
+    const isValidPassword = await compare(password, user.password);
+
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return user;
   }
 
-  async login(user: any) {
-    const payload = { email: user.email, sub: user._id };
+  async login({ email, _id }: User) {
+    const payload = { email, sub: _id };
     return {
       access_token: this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,

@@ -9,6 +9,9 @@ export class VerificationCode extends Document {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
+
+  @Prop({ required: true, default: new Date() })
+  createdAt: Date;
 }
 
 export const VerificationCodeSchema =

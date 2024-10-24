@@ -1,12 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { VerificationCode } from './verification.schema';
 import { Model } from 'mongoose';
 import { User } from 'src/users/user.schema';
 import { randomUUID } from 'crypto';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class VerificationService {
+  private readonly logger = new Logger(VerificationService.name);
+
   constructor(
     @InjectModel(VerificationCode.name)
     private verificationCodeModel: Model<VerificationCode>,
@@ -39,5 +42,19 @@ export class VerificationService {
     }
 
     return verificationCode.user;
+  }
+
+  @Cron('45 * * * * *')
+  async clearOldCodes() {
+    this.logger.log('Clearing old verification codes');
+
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - 30);
+
+    const result = await this.verificationCodeModel
+      .deleteMany({ createdAt: { $lt: now } })
+      .exec();
+
+    this.logger.log(`Cleared ${result.deletedCount} codes`);
   }
 }

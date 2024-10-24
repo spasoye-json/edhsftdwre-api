@@ -1,13 +1,18 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './user.schema';
 import { hash } from 'bcryptjs';
 import { LoginDto } from 'src/auth/dto/login.dto';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  private readonly logger: Logger = new Logger(UsersService.name);
+
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
   async createUser(body: LoginDto) {
     const { email } = body;
@@ -36,5 +41,18 @@ export class UsersService {
 
     user.verified = true;
     return await user.save();
+  }
+
+  @Cron('45 * * * * *')
+  async clearOldUsers() {
+    this.logger.log('Clearing old unverified users');
+
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - 30);
+    const results = await this.userModel
+      .deleteMany({ createdAt: { $lt: now }, verified: false })
+      .exec();
+
+    this.logger.log(`Cleared ${results.deletedCount} users`);
   }
 }

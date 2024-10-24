@@ -3,6 +3,7 @@ import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { VerificationService } from 'src/verification/verification.service';
+import { VerifyDto } from './dto/verify.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +19,13 @@ export class AuthController {
     await this.verificationService.createVerificationCode(user);
 
     return user;
+  }
+
+  @Post('verify')
+  async verify(@Body() body: VerifyDto) {
+    const user = await this.verificationService.getUserByCode(body.code);
+
+    return await this.usersService.verifyUser(user.id);
   }
 
   @Post('login')

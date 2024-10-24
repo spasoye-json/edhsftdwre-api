@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { VerificationCode } from './verification.schema';
 import { Model } from 'mongoose';
@@ -19,5 +19,17 @@ export class VerificationService {
     });
 
     return await code.save();
+  }
+
+  async getUserByCode(code: string) {
+    const verificationCode = await this.verificationCodeModel
+      .findOne({ code })
+      .exec();
+
+    if (!verificationCode) {
+      throw new BadRequestException('Invalid verification code');
+    }
+
+    return verificationCode.user;
   }
 }

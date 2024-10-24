@@ -21,12 +21,20 @@ export class VerificationService {
     return await code.save();
   }
 
+  async removeVerificationCode(code: string) {
+    return await this.verificationCodeModel
+      .deleteOne({
+        code,
+      })
+      .exec();
+  }
+
   async getUserByCode(code: string) {
     const verificationCode = await this.verificationCodeModel
       .findOne({ code })
       .exec();
 
-    if (!verificationCode) {
+    if (!verificationCode || !verificationCode.user) {
       throw new BadRequestException('Invalid verification code');
     }
 

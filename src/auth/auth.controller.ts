@@ -22,10 +22,14 @@ export class AuthController {
   }
 
   @Post('verify')
-  async verify(@Body() body: VerifyDto) {
-    const user = await this.verificationService.getUserByCode(body.code);
+  async verify(@Body() { code }: VerifyDto) {
+    const user = await this.verificationService.getUserByCode(code);
 
-    return await this.usersService.verifyUser(user);
+    const verifiedUser = await this.usersService.verifyUser(user);
+
+    await this.verificationService.removeVerificationCode(code);
+
+    return verifiedUser;
   }
 
   @Post('login')

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './user.schema';
@@ -28,14 +28,13 @@ export class UsersService {
   }
 
   async verifyUser({ _id }: User) {
-    return await this.userModel
-      .findOneAndUpdate(
-        {
-          _id,
-          verified: false,
-        },
-        { verified: true },
-      )
-      .exec();
+    const user = await this.findById(_id.toString());
+
+    if (user.verified) {
+      throw new BadRequestException('User is already verified');
+    }
+
+    user.verified = true;
+    return await user.save();
   }
 }

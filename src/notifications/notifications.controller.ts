@@ -6,6 +6,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get(':userId/notifications')
   async getNotifications(@Param('userId') userId: string) {
     return this.notificationsService.getNotifications(userId);

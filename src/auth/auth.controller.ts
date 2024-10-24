@@ -25,7 +25,7 @@ export class AuthController {
   async verify(@Body() body: VerifyDto) {
     const user = await this.verificationService.getUserByCode(body.code);
 
-    return await this.usersService.verifyUser(user.id);
+    return await this.usersService.verifyUser(user);
   }
 
   @Post('login')

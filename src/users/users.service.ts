@@ -27,11 +27,11 @@ export class UsersService {
     return await this.userModel.findById(userId).exec();
   }
 
-  async verifyUser(userId: string) {
+  async verifyUser({ _id }: User) {
     return await this.userModel
       .findOneAndUpdate(
         {
-          _id: userId,
+          _id,
           verified: false,
         },
         { verified: true },

@@ -44,6 +44,7 @@ export class JobQueueService {
           );
 
           if (user) {
+            this.logger.log(`Sending notification to user: ${user.email}`);
             await this.mailerService.sendMail({
               to: user.email,
               subject: 'New Notification',

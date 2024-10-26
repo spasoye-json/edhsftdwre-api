@@ -14,8 +14,8 @@ export class NotificationsService {
 
   async sendNotification(userId: string, message: string) {
     const notification = new this.notificationModel({ userId, message });
-    await notification.save();
-    this.notificationsGateway.notifyUser(userId, message);
+
+    return await notification.save();
   }
 
   async getNotifications(userId: string) {
@@ -23,5 +23,12 @@ export class NotificationsService {
       .find({ userId })
       .sort({ createdAt: -1 })
       .exec();
+  }
+
+  async processNotificationJob(userId: string, message: string) {
+    const notification = new this.notificationModel({ userId, message });
+    await notification.save();
+
+    this.notificationsGateway.notifyUser(userId, message);
   }
 }

@@ -11,6 +11,7 @@ import {
 import { MailerService } from '@nestjs-modules/mailer';
 import { UsersService } from 'src/users/users.service';
 import { NotificationCreatedEventSchema } from 'src/notifications/notification.mq';
+import { UserRegisteredEventSchema } from 'src/users/user.mq';
 
 @Injectable()
 export class JobQueueService {
@@ -54,6 +55,24 @@ export class JobQueueService {
               },
             });
           }
+        }
+        break;
+
+      case JobQueueTask.USER_REGISTERED:
+        {
+          const { payload } = UserRegisteredEventSchema.parse(msg);
+
+          this.logger.log(
+            `Sending verification email to user: ${payload.email}`,
+          );
+          await this.mailerService.sendMail({
+            to: payload.email,
+            subject: 'Verify your email',
+            template: './verify',
+            context: {
+              code: payload.code,
+            },
+          });
         }
         break;
     }

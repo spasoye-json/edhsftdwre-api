@@ -6,7 +6,10 @@ export const MQ_QUEUE = 'tasks.queue';
 export const MQ_CHANNEL = 'tasks.channel';
 
 export enum JobQueueTask {
+  // Notification
   NOTIFICATION_CREATED = 'NOTIFICATION_CREATED',
+  // User
+  USER_REGISTERED = 'USER_REGISTERED',
 }
 
 export const JobQueueSchema = z.object({

@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Notification } from './notification.schema';
 import { NotificationsGateway } from './notifications.gateway';
-import { JobQueueService } from 'src/job-queue/job-queue.service';
 
 @Injectable()
 export class NotificationsService {
@@ -11,15 +10,12 @@ export class NotificationsService {
     @InjectModel(Notification.name)
     private notificationModel: Model<Notification>,
     private notificationsGateway: NotificationsGateway,
-    private jobQueueService: JobQueueService,
   ) {}
 
   async sendNotification(userId: string, message: string) {
-    await this.jobQueueService.addJob({
-      type: 'sendNotification',
-      userId,
-      message,
-    });
+    const notification = new this.notificationModel({ userId, message });
+
+    return await notification.save();
   }
 
   async getNotifications(userId: string) {

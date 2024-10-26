@@ -1,5 +1,7 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
+import { MQ_CHANNEL, MQ_EXCHANGE } from './job-queue.constants';
+import { JobQueueService } from './job-queue.service';
 
 @Module({
   imports: [
@@ -7,18 +9,18 @@ import { Module } from '@nestjs/common';
       uri: 'amqp://localhost:5672',
       exchanges: [
         {
-          name: 'tasks.exchange',
+          name: MQ_EXCHANGE,
           type: 'direct',
         },
       ],
       channels: {
-        'tasks.channel': {
+        [MQ_CHANNEL]: {
           default: true,
         },
       },
     }),
   ],
-  providers: [],
-  exports: [],
+  providers: [JobQueueService],
+  exports: [JobQueueService],
 })
 export class JobQueueModule {}

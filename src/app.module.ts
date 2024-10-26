@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { VerificationModule } from './verification/verification.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { JobQueueModule } from './job-queue/job-queue.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     UsersModule,
     NotificationsModule,
     AuthModule,
+    JobQueueModule,
   ],
 })
 export class AppModule {}

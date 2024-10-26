@@ -9,6 +9,7 @@ import {
   createUserVerifiedEvent,
 } from 'src/users/user.mq';
 import { JobQueueService } from 'src/job-queue/job-queue.service';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Controller('auth')
 export class AuthController {
@@ -17,13 +18,23 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly verificationService: VerificationService,
     private readonly jobQueueService: JobQueueService,
+    private readonly mailerService: MailerService,
   ) {}
 
   @Post('register')
   async register(@Body() body: LoginDto) {
     const user = await this.usersService.createUser(body);
-    await this.verificationService.createVerificationCode(user);
+    const code = await this.verificationService.createVerificationCode(user);
     await this.jobQueueService.sendTaskMessage(createUserRegisterEvent(user));
+
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Verify your email',
+      template: './verify',
+      context: {
+        code,
+      },
+    });
 
     return user;
   }

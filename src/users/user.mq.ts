@@ -1,19 +1,27 @@
+import {
+  JobQueueSchema,
+  JobQueueTask,
+} from 'src/job-queue/job-queue.constants';
 import { User } from './user.schema';
+import { z } from 'zod';
+import { VerificationCode } from 'src/verification/verification.schema';
 
-export function createUserRegisterEvent(user: User) {
-  return {
-    type: 'USER_REGISTERED',
-    payload: {
-      id: user.id.toString(),
-    },
-  };
-}
+export const UserRegisteredEventSchema = JobQueueSchema.extend({
+  payload: z.object({
+    email: z.string().email(),
+    code: z.string().uuid(),
+  }),
+});
 
-export function createUserVerifiedEvent(user: User) {
+export function createUserRegisterEvent(
+  user: User,
+  code: VerificationCode,
+): z.infer<typeof UserRegisteredEventSchema> {
   return {
-    type: 'USER_VERIFIED',
+    type: JobQueueTask.USER_REGISTERED,
     payload: {
-      id: user.id.toString(),
+      email: user.email,
+      code: code.code,
     },
   };
 }

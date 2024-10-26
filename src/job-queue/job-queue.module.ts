@@ -2,6 +2,7 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
 import { MQ_CHANNEL, MQ_EXCHANGE } from './job-queue.constants';
 import { JobQueueService } from './job-queue.service';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JobQueueService } from './job-queue.service';
         },
       },
     }),
+    UsersModule,
   ],
   providers: [JobQueueService],
   exports: [JobQueueService],

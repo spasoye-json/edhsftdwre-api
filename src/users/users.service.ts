@@ -43,6 +43,16 @@ export class UsersService {
     return await user.save();
   }
 
+  async findNotifiableUserById(userId: string) {
+    return await this.userModel
+      .findOne({
+        _id: userId,
+        verified: true,
+        'preferences.emailNotifications': true,
+      })
+      .exec();
+  }
+
   @Cron('45 * * * * *')
   async clearOldUsers() {
     this.logger.log('Clearing old unverified users');

@@ -8,8 +8,8 @@ import { NotificationsGateway } from './notifications.gateway';
 export class NotificationsService {
   constructor(
     @InjectModel(Notification.name)
-    private notificationModel: Model<Notification>,
-    private notificationsGateway: NotificationsGateway,
+    private readonly notificationModel: Model<Notification>,
+    private readonly notificationsGateway: NotificationsGateway,
   ) {}
 
   async sendNotification(userId: string, message: string) {

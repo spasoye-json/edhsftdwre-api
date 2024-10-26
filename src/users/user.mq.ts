@@ -1,6 +1,6 @@
 import { User } from './user.schema';
 
-export async function createUserRegisterEvent(user: User) {
+export function createUserRegisterEvent(user: User) {
   return {
     type: 'USER_REGISTERED',
     payload: {
@@ -9,7 +9,7 @@ export async function createUserRegisterEvent(user: User) {
   };
 }
 
-export async function createUserVerifiedEvent(user: User) {
+export function createUserVerifiedEvent(user: User) {
   return {
     type: 'USER_VERIFIED',
     payload: {

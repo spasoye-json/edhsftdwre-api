@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { User } from 'src/users/user.schema';
 
-@Schema()
+@Schema({ collection: 'verification-codes' })
 export class VerificationCode extends Document {
   @Prop({ required: true, unique: true })
   code: string;

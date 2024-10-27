@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MiscController } from './misc.controller';
-import { MiscService } from './misc.service';
+import { FizzBuzzService } from './fizzbuzz.service';
 
 @Module({
   controllers: [MiscController],
-  providers: [MiscService]
+  providers: [FizzBuzzService],
 })
 export class MiscModule {}

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 
 @Injectable()
-export class MiscService {
+export class FizzBuzzService {
   private readonly fizzBuzzSchema = z.coerce.number();
   private readonly fizzBuzzCache: Map<string, string> = new Map();
 

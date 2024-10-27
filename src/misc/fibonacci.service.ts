@@ -6,7 +6,7 @@ type FibonacciResult = BadRequestException | string;
 @Injectable()
 export class FibonacciService {
   private readonly logger = new Logger(FibonacciService.name);
-  private readonly fibonacciSchema = z.coerce.number();
+  private readonly fibonacciSchema = z.coerce.number().gte(0);
   private readonly fibonacciCache: Map<string, FibonacciResult> = new Map();
 
   constructor() {

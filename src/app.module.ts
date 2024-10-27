@@ -8,6 +8,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { JobQueueModule } from './job-queue/job-queue.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { MiscModule } from './misc/misc.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
     NotificationsModule,
     AuthModule,
     JobQueueModule,
+    MiscModule,
   ],
 })
 export class AppModule {}

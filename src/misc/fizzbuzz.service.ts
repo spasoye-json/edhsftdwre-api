@@ -1,28 +1,41 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { z } from 'zod';
+
+type FizzBuzzResult = BadRequestException | string;
 
 @Injectable()
 export class FizzBuzzService {
+  private readonly logger = new Logger(FizzBuzzService.name);
   private readonly fizzBuzzSchema = z.coerce.number();
-  private readonly fizzBuzzCache: Map<string, string> = new Map();
+  private readonly fizzBuzzCache: Map<string, FizzBuzzResult> = new Map();
 
   async getFizzBuzz(number: string) {
-    // First, check if the number is already in the cache
     if (this.fizzBuzzCache.has(number)) {
-      return {
-        result: this.fizzBuzzCache.get(number),
-      };
+      this.logger.log('Cache hit');
+      const result = this.fizzBuzzCache.get(number);
+
+      if (typeof result === 'string') {
+        return {
+          result,
+        };
+      }
+
+      this.logger.log('Cache hit with exception');
+      throw result;
     }
 
-    // If not, parse the number
+    this.logger.log('Cache miss');
     const numericResult = this.fizzBuzzSchema.safeParse(number);
 
     if (!numericResult.success) {
-      throw new BadRequestException('Invalid number');
+      const exception = new BadRequestException('Invalid number');
+      this.logger.log('Storing exception in cache');
+      this.fizzBuzzCache.set(number, exception);
+
+      throw exception;
     }
 
     const { data: value } = numericResult;
-
     let response = '';
 
     if (value % 3 === 0) {
@@ -34,7 +47,7 @@ export class FizzBuzzService {
 
     const result = response || value.toString();
 
-    // Cache the result
+    this.logger.log('Storing result in cache');
     this.fizzBuzzCache.set(number, result);
 
     return {

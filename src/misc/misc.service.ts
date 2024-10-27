@@ -3,14 +3,25 @@ import { z } from 'zod';
 
 @Injectable()
 export class MiscService {
-  async getFizzBuzz(number: string) {
-    const result = z.coerce.number().safeParse(number);
+  private readonly fizzBuzzSchema = z.coerce.number();
+  private readonly fizzBuzzCache: Map<string, string> = new Map();
 
-    if (!result.success) {
+  async getFizzBuzz(number: string) {
+    // First, check if the number is already in the cache
+    if (this.fizzBuzzCache.has(number)) {
+      return {
+        result: this.fizzBuzzCache.get(number),
+      };
+    }
+
+    // If not, parse the number
+    const numericResult = this.fizzBuzzSchema.safeParse(number);
+
+    if (!numericResult.success) {
       throw new BadRequestException('Invalid number');
     }
 
-    const { data: value } = result;
+    const { data: value } = numericResult;
 
     let response = '';
 
@@ -21,8 +32,13 @@ export class MiscService {
       response += 'Buzz';
     }
 
+    const result = response || value.toString();
+
+    // Cache the result
+    this.fizzBuzzCache.set(number, result);
+
     return {
-      result: response || value.toString(),
+      result,
     };
   }
 }

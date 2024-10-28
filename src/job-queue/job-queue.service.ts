@@ -11,7 +11,11 @@ import {
 import { MailerService } from '@nestjs-modules/mailer';
 import { UsersService } from 'src/users/users.service';
 import { NotificationCreatedEventSchema } from 'src/notifications/notification.mq';
-import { UserRegisteredEventSchema } from 'src/users/user.mq';
+import {
+  UserRegisteredEventSchema,
+  UserVerifiedEventSchema,
+} from 'src/users/user.mq';
+import { VerificationService } from 'src/verification/verification.service';
 
 @Injectable()
 export class JobQueueService {
@@ -21,6 +25,7 @@ export class JobQueueService {
     private readonly amqpConnection: AmqpConnection,
     private readonly mailerService: MailerService,
     private readonly usersService: UsersService,
+    private readonly verificationService: VerificationService,
   ) {}
 
   @RabbitSubscribe({
@@ -73,6 +78,17 @@ export class JobQueueService {
               code: payload.code,
             },
           });
+        }
+        break;
+
+      case JobQueueTask.USER_VERIFIED:
+        {
+          const { payload } = UserVerifiedEventSchema.parse(msg);
+
+          this.logger.log(
+            `Removing verification code for user: ${payload.email}`,
+          );
+          await this.verificationService.removeVerificationCode(payload.code);
         }
         break;
     }

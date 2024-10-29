@@ -4,7 +4,10 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { VerificationService } from 'src/verification/verification.service';
 import { VerifyDto } from './dto/verify.dto';
-import { createUserRegisterEvent } from 'src/users/user.mq';
+import {
+  createUserRegisterEvent,
+  createUserVerifiedEvent,
+} from 'src/users/user.mq';
 import { JobQueueService } from 'src/job-queue/job-queue.service';
 
 @Controller('auth')
@@ -31,8 +34,9 @@ export class AuthController {
   async verify(@Body() { code }: VerifyDto) {
     const user = await this.verificationService.getUserByCode(code);
     const verifiedUser = await this.usersService.verifyUser(user);
-
-    await this.verificationService.removeVerificationCode(code);
+    await this.jobQueueService.sendTaskMessage(
+      createUserVerifiedEvent(verifiedUser, code),
+    );
 
     return verifiedUser;
   }

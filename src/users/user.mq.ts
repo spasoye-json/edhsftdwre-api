@@ -13,6 +13,8 @@ export const UserRegisteredEventSchema = JobQueueSchema.extend({
   }),
 });
 
+export const UserVerifiedEventSchema = UserRegisteredEventSchema;
+
 export function createUserRegisterEvent(
   user: User,
   code: VerificationCode,
@@ -22,6 +24,19 @@ export function createUserRegisterEvent(
     payload: {
       email: user.email,
       code: code.code,
+    },
+  };
+}
+
+export function createUserVerifiedEvent(
+  user: User,
+  code: string,
+): z.infer<typeof UserVerifiedEventSchema> {
+  return {
+    type: JobQueueTask.USER_VERIFIED,
+    payload: {
+      email: user.email,
+      code: code,
     },
   };
 }

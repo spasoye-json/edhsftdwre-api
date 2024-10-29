@@ -10,6 +10,8 @@ export enum JobQueueTask {
   NOTIFICATION_CREATED = 'NOTIFICATION_CREATED',
   // User
   USER_REGISTERED = 'USER_REGISTERED',
+  // Verification
+  USER_VERIFIED = 'USER_VERIFIED',
 }
 
 export const JobQueueSchema = z.object({

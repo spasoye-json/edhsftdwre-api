@@ -1,10 +1,10 @@
 services:
   mailhog:
-      image: mailhog/mailhog
-      container_name: mailhog
-      ports:
-        - '1025:1025'
-        - '8025:8025'
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - '1025:1025'
+      - '8025:8025'
 
   mongodb:
     image: mongo:latest
@@ -15,6 +15,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
     volumes:
       - mongo-data:/data/db
 

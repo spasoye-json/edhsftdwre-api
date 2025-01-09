@@ -47,14 +47,10 @@ export class FibonacciService {
       return cachedResult;
     }
 
-    if (n <= 1) {
-      return n;
-    }
+    // Golden ratio
+    const phi = (1 + Math.sqrt(5)) / 2;
+    const result = Math.round((Math.pow(phi, n) - Math.pow(1 - phi, n)) / Math.sqrt(5));
 
-    const a = this.calculateFibonacciNumber(n - 1);
-    const b = this.calculateFibonacciNumber(n - 2);
-
-    const result = a + b;
     this.logger.log(`Caching Fibonacci number for ${n}`);
     this.fibonacciCache.set(n.toString(), result.toString());
 

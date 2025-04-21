@@ -4,6 +4,7 @@ import { FibonacciService } from './fibonacci.service';
 import { EchoService } from './echo.service';
 import { IsEvenService } from './is-even.service';
 import { IsOddService } from './is-odd.service';
+import { PalindromeService } from './palindrome.service';
 
 @Controller('misc')
 export class MiscController {
@@ -13,6 +14,7 @@ export class MiscController {
     private readonly echoService: EchoService,
     private readonly isEvenService: IsEvenService,
     private readonly isOddService: IsOddService,
+    private readonly palindromeService: PalindromeService,
   ) {}
 
   @Get('fizzbuzz/:number')
@@ -38,5 +40,10 @@ export class MiscController {
   @Get('is-odd/:number')
   async getIsOdd(@Param('number') number: string) {
     return this.isOddService.getIsOdd(number);
+  }
+
+  @Get('palindrome/:message')
+  async getPalindrome(@Param('message') message: string) {
+    return this.palindromeService.getPalindrome(message);
   }
 }

@@ -6,7 +6,7 @@ type IsEvenResult = BadRequestException | boolean;
 @Injectable()
 export class IsEvenService {
   private readonly logger = new Logger(IsEvenService.name);
-  private readonly isEvenSchema = z.coerce.number();
+  private readonly isEvenSchema = z.coerce.number().int();
   private readonly isEvenCache: Map<string, IsEvenResult> = new Map();
 
   constructor() {

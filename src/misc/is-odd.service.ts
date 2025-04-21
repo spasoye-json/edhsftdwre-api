@@ -6,7 +6,7 @@ type IsOddResult = BadRequestException | boolean;
 @Injectable()
 export class IsOddService {
   private readonly logger = new Logger(IsOddService.name);
-  private readonly isOddSchema = z.coerce.number();
+  private readonly isOddSchema = z.coerce.number().int();
   private readonly isOddCache: Map<string, IsOddResult> = new Map();
 
   constructor() {

@@ -28,23 +28,35 @@ export class EchoService {
       throw exception;
     }
 
-    result = parsedMessage.data;
-
-    this.logger.log(`Caching message: ${result}`);
-    this.echoCache.set(message, result);
+    result = this.calculateEcho(parsedMessage.data);
 
     return {
       result,
     };
   }
 
+  private calculateEcho(message: string) {
+    this.logger.log(`Caching echo for message: ${message}`);
+    this.echoCache.set(message, message);
+
+    return message;
+  }
+
   private getEchoFromCache(message: string) {
-    const cachedResult = this.echoCache.get(message);
-    if (cachedResult) {
+    if (this.echoCache.has(message)) {
       this.logger.log(`Cache hit for message: ${message}`);
-      return cachedResult;
+      const result = this.echoCache.get(message);
+
+      if (typeof result === 'string') {
+        return result;
+      }
+
+      this.logger.log('Cache hit with exception');
+      throw result;
     }
+
     this.logger.log(`Cache miss for message: ${message}`);
+
     return null;
   }
 }

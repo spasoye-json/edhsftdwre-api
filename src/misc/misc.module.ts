@@ -5,6 +5,7 @@ import { FibonacciService } from './fibonacci.service';
 import { EchoService } from './echo.service';
 import { IsEvenService } from './is-even.service';
 import { IsOddService } from './is-odd.service';
+import { PalindromeService } from './palindrome.service';
 
 @Module({
   controllers: [MiscController],
@@ -14,6 +15,7 @@ import { IsOddService } from './is-odd.service';
     EchoService,
     IsEvenService,
     IsOddService,
+    PalindromeService,
   ],
 })
 export class MiscModule {}

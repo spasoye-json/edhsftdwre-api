@@ -13,6 +13,7 @@ export class ImageService {
     width: z.coerce.number().int().gt(0),
     height: z.coerce.number().int().gt(0),
   });
+  private readonly randomImageUrl = 'https://picsum.photos';
 
   getDefaultImageSize(): ImageSize {
     return { width: 640, height: 480 };
@@ -46,6 +47,6 @@ export class ImageService {
 
   private generateRandomImageUrl(size: ImageSize) {
     this.logger.log(`Generating random image URL with size: ${size}`);
-    return `https://picsum.photos/${size.width}/${size.height}`;
+    return `${this.randomImageUrl}/${size.width}/${size.height}`;
   }
 }

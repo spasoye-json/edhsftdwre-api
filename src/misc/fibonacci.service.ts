@@ -6,7 +6,7 @@ type FibonacciResult = BadRequestException | string;
 @Injectable()
 export class FibonacciService {
   private readonly logger = new Logger(FibonacciService.name);
-  private readonly fibonacciSchema = z.coerce.number().gte(0);
+  private readonly fibonacciSchema = z.coerce.number().int().gte(0);
   private readonly fibonacciCache: Map<string, FibonacciResult> = new Map();
 
   constructor() {
@@ -49,7 +49,9 @@ export class FibonacciService {
 
     // Golden ratio
     const phi = (1 + Math.sqrt(5)) / 2;
-    const result = Math.round((Math.pow(phi, n) - Math.pow(1 - phi, n)) / Math.sqrt(5));
+    const result = Math.round(
+      (Math.pow(phi, n) - Math.pow(1 - phi, n)) / Math.sqrt(5),
+    );
 
     this.logger.log(`Caching Fibonacci number for ${n}`);
     this.fibonacciCache.set(n.toString(), result.toString());

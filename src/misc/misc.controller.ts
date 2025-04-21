@@ -2,6 +2,8 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { FizzBuzzService } from './fizzbuzz.service';
 import { FibonacciService } from './fibonacci.service';
 import { EchoService } from './echo.service';
+import { IsEvenService } from './is-even.service';
+import { IsOddService } from './is-odd.service';
 
 @Controller('misc')
 export class MiscController {
@@ -9,6 +11,8 @@ export class MiscController {
     private readonly fizzBuzzService: FizzBuzzService,
     private readonly fibonacciService: FibonacciService,
     private readonly echoService: EchoService,
+    private readonly isEvenService: IsEvenService,
+    private readonly isOddService: IsOddService,
   ) {}
 
   @Get('fizzbuzz/:number')
@@ -24,5 +28,15 @@ export class MiscController {
   @Get('echo/:message')
   async getEcho(@Param('message') message: string) {
     return this.echoService.getEcho(message);
+  }
+
+  @Get('is-even/:number')
+  async getIsEven(@Param('number') number: string) {
+    return this.isEvenService.getIsEven(number);
+  }
+
+  @Get('is-odd/:number')
+  async getIsOdd(@Param('number') number: string) {
+    return this.isOddService.getIsOdd(number);
   }
 }
